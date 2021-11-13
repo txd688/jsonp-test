@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jsonp 封装</title>
+  <script src="jsonp.js"></script>
+  <!-- 通过src实现跨域，这是jsonp跨域逻辑 -->
+  <script src="http://127.0.0.9:3000/getAjax?callback=测试&name=1"></script>
+</head>
+<body>
+  <button id="btn1">点击请求jsonp(原理)</button>
+  <button id="btn2">点击请求jsonp</button>
+</body>
+<script>
+  // 基本原理(通过创建一个js链接，实现跨域。传入一个回调函数callback，得到请求后的回调和请求后的参数)
+  let btn1 = document.getElementById("btn1");
+  function cbfn(res){
+      console.log(res,'这是一个请求以后的的回调函数');
+  }
+  btn1.onclick = function(){
+    let o = document.createElement("script");
+    o.src = "http://127.0.0.9:3000/getAjax?callback=cbfn";
+    document.querySelector("head").appendChild(o);
+  }
+
+  // 封装过后
+  let btn2 = document.getElementById("btn2");
+    btn2.onclick = function(){
+      ajax({
+        url:"http://127.0.0.9:3000/getAjax",
+        data:{
+            name:"张三",
+            age:20
+        },
+        dataType:"jsonp",
+        jsonp:"callback",
+        success:function(res){
+            console.log(res)
+        }
+    })
+  }
+</script>
+</html>
